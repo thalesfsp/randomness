@@ -92,6 +92,8 @@ func ExampleNew_generate_collisionFreeError() {
 
 // Demonstrates how to generate a random number (integer) - with the
 // collision-free option, no collision, and with maxRetry.
+//
+//nolint:dupword
 func ExampleNew_generate_collisionFreeMaxRetry() {
 	errMsgs := []error{}
 

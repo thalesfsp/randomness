@@ -12,9 +12,7 @@ import (
 
 	"github.com/thalesfsp/customerror"
 	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/fields"
 	"github.com/thalesfsp/sypl/level"
-	"github.com/thalesfsp/sypl/options"
 )
 
 var l = sypl.NewDefault("randomgenerator", level.Info)
@@ -69,9 +67,8 @@ func (r *Randomness) Generate() (int64, error) {
 					return 0, ErrFailedToGenerateReachedMaxRetry
 				}
 
-				l.PrintlnWithOptions(&options.Options{
-					Fields: fields.Fields{"retry": *r.maxRetry},
-				}, level.Debug, "Retrying...")
+				l.PrintlnWithOptions(level.Debug, "Retrying...", sypl.WithField("retry", *r.maxRetry))
+
 				*r.maxRetry--
 			}
 
@@ -137,7 +134,7 @@ func New(min, max, maxRetry int, collisionFree bool) (*Randomness, error) {
 
 	if max == 0 {
 		// TODO: Switch to `math.MaxInt`, only available in Go 1.17+.
-		max = math.MaxInt32
+		max = math.MaxInt
 	}
 
 	if max < min {
