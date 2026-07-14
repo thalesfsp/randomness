@@ -11,8 +11,8 @@ import (
 	"math/big"
 
 	"github.com/thalesfsp/customerror"
-	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/level"
+	"github.com/thalesfsp/sypl/v2"
+	"github.com/thalesfsp/sypl/v2/level"
 )
 
 var l = sypl.NewDefault("randomgenerator", level.Info)
