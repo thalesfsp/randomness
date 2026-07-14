@@ -3,71 +3,91 @@
 # license that can be found in the LICENSE file.
 
 ---
-run:
-  timeout: 1m
-  skip-files:
-    - internal/*
-
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
-    - wrapcheck
-    - testpackage
-    - gochecknoglobals
-    - exhaustivestruct
-    - exhaustruct
-    - paralleltest
-    - godox
     - cyclop
+    - err113
+    - exhaustruct
+    - gochecknoglobals
+    - godox
+    - paralleltest
     - tagliatelle
-    - goerr113
+    - testpackage
     - varnamelen
-  fast: false
-
-# Settings for specific linters
-linters-settings:
-  funlen:
-    lines: 150
-    statements: 45
-  lll:
-    line-length: 125
-
-issues:
-  exclude-rules:
-    - path: cmd/
-      linters:
-        - gochecknoinits
-        - gomnd
-        - forbidigo
-        - lll
-
-    - path: example_test.go
-      linters:
-        - lll
-
-    - path: internal/http/
-      linters:
-        - unparam
-        - nlreturn
-
-    - path: _test\.go
-      linters:
-        - scopelint
-        - gocritic
-
-    - path: doc.go
-      linters:
-        - lll
-
-    - linters:
-        - lll
-      source: "json:"
-
-    - path: example_test.go
-      linters:
-        - nosnakecase
-
-    - linters:
-        - gocritic
-        - godot
-      source: "//////"
+    - wrapcheck
+    # Linters that golangci-lint v2's `default: all` newly enabled or strengthened
+    # beyond the v1.51.2 gate this repo previously enforced. Several were surfaced
+    # only by the mandatory Go 1.19 -> 1.23 directive bump that sypl/v2's module
+    # floor requires. Disabled to keep the lint gate at its prior strength: every
+    # finding is in pre-existing code untouched by this migration (deny-all
+    # depguard with no configured rules; range-over-int modernization; min/max
+    # now being Go builtins; package-doc phrasing). Adopting them is separate
+    # modernization work, not part of this dependency migration.
+    - depguard
+    - godoclint
+    - intrange
+    - modernize
+    - predeclared
+    - revive
+  settings:
+    funlen:
+      lines: 150
+      statements: 45
+    lll:
+      line-length: 125
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - forbidigo
+          - gochecknoinits
+          - lll
+          - mnd
+        path: cmd/
+      - linters:
+          - lll
+        path: example_test.go
+      - linters:
+          - nlreturn
+          - unparam
+        path: internal/http/
+      - linters:
+          - gocritic
+          - scopelint
+        path: _test\.go
+      - linters:
+          - lll
+        path: doc.go
+      - linters:
+          - lll
+        source: 'json:'
+      - linters:
+          - nosnakecase
+        path: example_test.go
+      - linters:
+          - gocritic
+          - godot
+        source: //////
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
